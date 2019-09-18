@@ -45,4 +45,3 @@ To generate the ROM using Windows:
 5) Copy generated a.*.rom into root of SD card along with the Arcade-*.rbf file
 
 
-To generate the ROM using Linux/MacOS/MiSTer is in preparation.
