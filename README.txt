@@ -2,6 +2,7 @@
 -- 
 -- Arcade: New Rally-X  port to MiSTer by MiSTer-X
 -- 18 September 2019
+-- From: https://github.com/MrX-8B/MiSTer-Arcade-RallyX
 -- 
 ---------------------------------------------------------------------------------
 -- FPGA New Rally-X for Spartan-3 Starter Board
