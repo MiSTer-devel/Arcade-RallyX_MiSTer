@@ -1,0 +1,10 @@
+
+0000-3FFF	CPU instruction
+4000-7FFF	"BANG!" PCM data
+8000-8FFF	Background/Object pattern
+9000-90FF	Rader dot pattern
+9100-91FF	Sound wave
+9200-92FF	Lookup table
+9300-931F	Palette
+
+[EOF]
