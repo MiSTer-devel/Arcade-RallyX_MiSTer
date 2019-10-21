@@ -55,9 +55,10 @@ assign SPCHRADR  = { SPA[7:2], ( SV[3] ^ SPA[1] ), ( SH[3:2] ^ SPFX ), ( SV[2:0]
 wire	[7:0] CHRO = SPCHRDAT;
 
 
-wire	[8:0] YM =  ( SPRADATA[15:8] + 8'h10 ) + VPOS[7:0];
+wire	[8:0] YM = ( SPRADATA[15:8] + 8'h10 ) + (VPOS[7:0]+1);
 
 assign DROMAD = { 1'b0, (~SPA[19:17]), SPA[33:32], WRADR[3:2] };
+
 
 always @ ( posedge VCLKx2 ) begin
 
@@ -107,7 +108,7 @@ always @ ( posedge VCLKx2 ) begin
 			end
 			// Rend Rader-dot
 			else begin
-				HPOSW <= ( WRADR[3:0] ) ? (HPOSW+1) : ({ (~SPA[16]), SPA[7:0] });
+				HPOSW <= ( WRADR[3:0] ) ? (HPOSW+1) : {(~SPA[16]),SPA[7:0]};
 				SPWCL <= ( DROMDT[1:0] != 2'b11 ) ? { 1'b1, 6'b000100, DROMDT[1:0] } : 0;
 				WRADR <= WRADR+4;
 			end
@@ -130,8 +131,7 @@ end
 reg  [9:0] radr0=0,radr1=1;
 wire [8:0] SPCOLi;
 
-LINEBUF1024_9 linedbuf(VCLKx2,{SIDE,HPOS},(radr0==radr1),SPCOLi, VCLKx2,{~SIDE,HPOSW},(SPWCL[0]|SPWCL[1]),SPWCL);
-//GLINEBUF #(10,9) linedbuf(VCLKx2,{SIDE,HPOS},(radr0==radr1),SPCOLi, VCLKx2,{~SIDE,HPOSW},(SPWCL[0]|SPWCL[1]),SPWCL);
+LINEBUF1024_9 linedbuf(VCLKx2,{SIDE,HPOS},(radr0==radr1),SPCOLi, ~VCLKx2,{~SIDE,HPOSW},(SPWCL[0]|SPWCL[1]),SPWCL);
 
 always @(posedge VCLK) radr0 <= {SIDE,HPOS};
 always @(negedge VCLK) begin 

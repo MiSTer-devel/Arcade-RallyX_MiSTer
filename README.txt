@@ -21,12 +21,24 @@
 --   F2          : Coin + Start 2 players
 --   F1          : Coin + Start 1 player
 --   UP,DOWN,LEFT,RIGHT arrows : Movements
---   SPACE,CTRL  : Smoke
+--   SPACE/CTRL  : Smoke
 --
+-- MAME/IPAC/JPAC Style Keyboard inputs:
+--   5           : Coin 1
+--   6           : Coin 2
+--   1           : Start 1 Player
+--   2           : Start 2 Players
+--   R,F,D,G     : Player 2 Movements
+--   A/S         : Player 2 Smoke
 --
 -- Joystick support.
 -- 
 -- 
+---------------------------------------------------------------------------------
+-- 22 October 2019
+---------------------------------------------------------------------------------
+--  FIXED: CRT video problems
+-- CHANGE: Keyboard inputs
 ---------------------------------------------------------------------------------
 
                                 *** Attention ***
@@ -45,4 +57,13 @@ To generate the ROM using Windows:
 4) If everything will go without errors or warnings, then you will get the a.*.rom file.
 5) Copy generated a.*.rom into root of SD card along with the Arcade-*.rbf file
 
+To generate the ROM using Linux/MacOS:
+1) Copy the zip into "releases" directory
+2) Execute build_rom.sh
+3) Copy generated a.*.rom into root of SD card along with the Arcade-*.rbf file
+
+To generate the ROM using MiSTer:
+1) scp "releases" directory along with the zip file onto MiSTer:/media/fat/
+2) Using OSD execute build_rom.sh
+3) Copy generated a.*.rom into root of SD card along with the Arcade-*.rbf file
 

@@ -4,8 +4,6 @@
 //  Original implimentation and port to MiSTer by MiSTer-X 2019
 //============================================================================
 
-//`define ALLOW_COIN
-
 module emu
 (
 	//Master input clock
@@ -85,11 +83,7 @@ localparam CONF_STR = {
 	"OF,Service Mode,Off,On;",
 	"-;",
 	"R0,Reset;",
-`ifdef ALLOW_COIN
 	"J1,Smoke,Start 1P,Start 2P,Coin;",
-`else
-	"J1,Smoke,Start 1P,Start 2P;",
-`endif
 	"V,v",`BUILD_DATE
 };
 
@@ -170,6 +164,7 @@ always @(posedge clk_sys) begin
 			'h023: btn_left_2      <= pressed; // D
 			'h034: btn_right_2     <= pressed; // G
 			'h01C: btn_fire_2      <= pressed; // A
+			'h01B: btn_fire_2      <= pressed; // S
 		endcase
 	end
 end
@@ -193,30 +188,25 @@ reg btn_right_2 = 0;
 reg btn_fire_2  = 0;
 
 
-wire bCabinet  = 1'b0; //status[14];
+wire bCabinet  = 1'b0;	// (upright only)
 
 wire m_up2     = btn_up_2    | joystk2[3];
 wire m_down2   = btn_down_2  | joystk2[2];
 wire m_left2   = btn_left_2  | joystk2[1];
 wire m_right2  = btn_right_2 | joystk2[0];
-wire m_smoke2  = btn_fire_2  | joystk2[4];
+wire m_trig2   = btn_fire_2  | joystk2[4];
 
-wire m_start1  = btn_one_player  | joystk1[5] | joystk2[5];
-wire m_start2  = btn_two_players | joystk1[6] | joystk2[6];
+wire m_start1  = btn_one_player  | joystk1[5] | joystk2[5] | btn_start_1;
+wire m_start2  = btn_two_players | joystk1[6] | joystk2[6] | btn_start_2;
 
 wire m_up1     = btn_up      | joystk1[3] | (bCabinet ? 1'b0 : m_up2);
 wire m_down1   = btn_down    | joystk1[2] | (bCabinet ? 1'b0 : m_down2);
 wire m_left1   = btn_left    | joystk1[1] | (bCabinet ? 1'b0 : m_left2);
 wire m_right1  = btn_right   | joystk1[0] | (bCabinet ? 1'b0 : m_right2);
-wire m_smoke1  = btn_fire    | joystk1[4] | (bCabinet ? 1'b0 : m_smoke2);
+wire m_trig1   = btn_fire    | joystk1[4] | (bCabinet ? 1'b0 : m_trig2);
 
-`ifdef ALLOW_COIN
-wire m_coin1   = btn_coin_1  | joystk1[7];
-wire m_coin2   = btn_coin_2  | joystk2[7];
-`else
-wire m_coin1   = m_start1    | m_start2;
-wire m_coin2   = 1'b0;
-`endif
+wire m_coin1   = btn_one_player | btn_coin_1 | joystk1[7];
+wire m_coin2   = btn_two_players| btn_coin_2 | joystk2[7];
 
 
 ///////////////////////////////////////////////////
@@ -271,8 +261,8 @@ assign AUDIO_S = 0; // unsigned PCM
 wire			iRST  = RESET | status[0] | buttons[1] | ioctl_download;
 
 wire  [7:0] iDSW  = ~{ 2'b00, status[10:8], status[12:11], status[15] };
-wire  [7:0] iCTR1 = ~{ m_coin1, m_start1, m_up1, m_down1, m_right1, m_left1, m_smoke1, 1'b0 };
-wire  [7:0] iCTR2 = ~{ m_coin2, m_start2, m_up2, m_down2, m_right2, m_left2, m_smoke2, bCabinet };
+wire  [7:0] iCTR1 = ~{ m_coin1, m_start1, m_up1, m_down1, m_right1, m_left1, m_trig1, 1'b0 };
+wire  [7:0] iCTR2 = ~{ m_coin2, m_start2, m_up2, m_down2, m_right2, m_left2, m_trig2, bCabinet };
 
 wire  [7:0] oPIX;
 wire  [7:0] oSND;
@@ -314,21 +304,21 @@ assign VPOS = vcnt;
 
 always @(posedge PCLK) begin
 	case (hcnt)
-		287: begin HBLK <= 1; HSYN <= 0; hcnt <= hcnt+1; end
-		311: begin HSYN <= 1; hcnt <= hcnt+1; end
-		383: begin
-			HBLK <= 0; HSYN <= 1; hcnt <= 0;
+		288: begin HBLK <= 1; hcnt <= hcnt+1; end
+		311: begin HSYN <= 0; hcnt <= hcnt+1; end
+		342: begin HSYN <= 1; hcnt <= 471;    end
+		511: begin HBLK <= 0; hcnt <= 0;
 			case (vcnt)
 				223: begin VBLK <= 1; vcnt <= vcnt+1; end
 				226: begin VSYN <= 0; vcnt <= vcnt+1; end
-				233: begin VSYN <= 1; vcnt <= vcnt+1; end
-				262: begin VBLK <= 0; vcnt <= 0; end
+				233: begin VSYN <= 1; vcnt <= 483;	  end
+				511: begin VBLK <= 0; vcnt <= 0;		  end
 				default: vcnt <= vcnt+1;
 			endcase
 		end
 		default: hcnt <= hcnt+1;
 	endcase
-	oRGB <= (HBLK|VBLK|(HPOS<=1)) ? 12'h0 : iRGB;
+	oRGB <= (HBLK|VBLK) ? 12'h0 : iRGB;
 end
 
 endmodule

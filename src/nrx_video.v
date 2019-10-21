@@ -5,8 +5,8 @@ module NRX_VIDEO
 (
 	input				 VCLKx4,		// 24.976MHz
 
-	input  [8:0]		HPOS,
-	input  [8:0]		VPOS,
+	input  [8:0]		HPOSi,
+	input  [8:0]		VPOSi,
 	output				PCLK,
 	output reg [7:0]	POUT,
 
@@ -23,6 +23,9 @@ module NRX_VIDEO
 	input  [7:0]		ROMDT,
 	input					ROMEN
 );
+
+wire [8:0] HPOS = HPOSi+2;
+wire [8:0] VPOS = VPOSi+(HPOSi>=504);
 
 //-----------------------------------------
 //  Clock generators
@@ -67,8 +70,8 @@ wire oVB = ( VPOS > 224 ) ? 1 : 0;
 //  VideoRAM Scanner
 //----------------------------------------
 wire				BF	= ( HPOS >= 224 );
-wire	[8:0]		HP  = BF ? HPOS : BGHPOS;
-wire	[8:0]		VP  = ( BF ? VPOS : BGVPOS ) + 9'h0F;
+wire	[8:0]		HP = ( BF ? HPOS : BGHPOS );
+wire	[8:0]		VP = ( BF ? VPOS : BGVPOS ) + 9'd16;
 
 wire	[10:0]	SPRAADRS;
 wire	[3:0]		ARAMADRS;
@@ -165,7 +168,7 @@ DLROM #(5,8)	palette(VCLKx4,PALA,PALO,  ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:5]==
 //----------------------------------------
 //  Color output
 //----------------------------------------
-always @ ( posedge PCLK ) POUT <= (oHB|oVB) ? 8'h0 : PALO;
+always @ ( posedge PCLK ) POUT <= PALO;
 assign PCLK = VCLK;
 
 

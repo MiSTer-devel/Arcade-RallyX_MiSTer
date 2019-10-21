@@ -133,7 +133,7 @@ T80s z80(
 //  VIDEO
 //--------------------------------------------------
 NRX_VIDEO video( 
-	.VCLKx4(CLK),  .HPOS(HP+3), .VPOS(VP+1), .PCLK(PCLK), .POUT(POUT), 
+	.VCLKx4(CLK),  .HPOSi(HP), .VPOSi(VP), .PCLK(PCLK), .POUT(POUT), 
 	.CPUCLK(CCLK), .CPUADDR(ad),
 	.CPUDI(odt),   .CPUDO(viddata),
 	.CPUME(mx),    .CPUWE(mw), .CPUDT(vid_Rce),
