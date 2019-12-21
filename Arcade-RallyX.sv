@@ -83,8 +83,6 @@ assign HDMI_ARY = status[1] ? 8'd9  : 8'd3;
 localparam CONF_STR = {
 	"A.NRALLYX;;",
 
-	"F,rom;",		// allow loading of alternate ROMs
-	"-;",
 	"O1,Aspect Ratio,Original,Wide;",
 	"-;",
 	//"OE,Cabinet,Upright,Cocktail;",
