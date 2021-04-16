@@ -1049,4 +1049,11 @@ a5acb1b1aba19a938c878788857f7670
 		<part crc="4e46f485" name="nrx1-7.8p"/>
 		<part crc="a0a49017" name="nrx1-1.11n"/>
 	</rom>
+	<rom index="3" md5="none">
+		<part>
+		12 98 BE 00 00 FF 00 08 00 08 00 01 00 FF 0F 00
+		00 00 80 60 00 08 00 02
+		</part>
+	</rom>	
+	<nvram index="4" size="8"/>
 </misterromdescription>
