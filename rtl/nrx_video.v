@@ -21,7 +21,13 @@ module NRX_VIDEO
 	input					ROMCL,
 	input  [15:0]		ROMAD,
 	input  [7:0]		ROMDT,
-	input					ROMEN
+	input					ROMEN,
+
+	input	 [15:0]	hs_address,
+	input	 [7:0]	hs_data_in,
+	output [7:0]	hs_data_out,
+	input				hs_write,
+	input				hs_access
 );
 
 wire [8:0] HPOS = HPOSi+2;
@@ -99,7 +105,17 @@ wire	[7:0]		DTV1	= CEV1 ? V1DO : 8'h00;
 assign			CPUDO = DTV0 | DTV1;
 assign			CPUDT = ( ~CPUWE ) & ( CEV0 | CEV1 );
 
-GDPRAM #(11,8) vram0( VCLKx4, VRAMADRS, CHRC, CPUCLK, CPUADDR[10:0], ( CPUWE & CEV0 ), CPUDI, V0DO );  
+// Hiscore mux
+wire 			wram0_clk = hs_access ? ROMCL : CPUCLK;
+wire [10:0]	wram0_addr = hs_access ? hs_address[10:0] : CPUADDR[10:0];
+wire 			wram0_we = hs_access ? hs_write : (CPUWE & CEV0);
+wire [7:0]	wram0_di = hs_access ? hs_data_in : CPUDI;
+wire [7:0]	wram0_do;
+
+assign hs_data_out = hs_access ? wram0_do : 8'h00;
+assign V0DO = hs_access ? 8'h00 : wram0_do;
+
+GDPRAM #(11,8) vram0( VCLKx4, VRAMADRS, CHRC, wram0_clk, wram0_addr, wram0_we, wram0_di, wram0_do);  
 GDPRAM #(11,8)	vram1( VCLKx4, VRAMADRS, ATTR, CPUCLK, CPUADDR[10:0], ( CPUWE & CEV1 ), CPUDI, V1DO );  
 GDPRAM #(4,8)	aram0( VCLKx4, ARAMADRS, ARDT, CPUCLK, CPUADDR[3:0],  ( CPUWE & CEAT ), CPUDI );
 

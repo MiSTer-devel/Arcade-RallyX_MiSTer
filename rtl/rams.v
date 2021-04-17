@@ -101,7 +101,7 @@ module DLROM #(parameter AW,parameter DW)
 	input							WE1
 );
 
-reg [DW:0] core[0:((2**AW)-1)];
+reg [(DW-1):0] core[0:((2**AW)-1)];
 
 always @(posedge CL0) DO0 <= core[AD0];
 always @(posedge CL1) if (WE1) core[AD1] <= DI1;

@@ -22,7 +22,15 @@ module fpga_NRX
 	input				ROMCL,		// Downloaded ROM image
 	input  [15:0] 	ROMAD,
 	input	  [7:0]	ROMDT,
-	input				ROMEN
+	input				ROMEN,
+
+	input				pause,
+
+	input	 [15:0]	hs_address,
+	input	 [7:0]	hs_data_in,
+	output [7:0]	hs_data_out,
+	input				hs_write,
+	input				hs_access
 );
 
 
@@ -122,7 +130,7 @@ wire [7:0]	idt   = romd | ramd | irqv | vidd | inpd;
 
 T80s z80(
 	.RESET_n(~RESET), .CLK_n(CCLK),
-	.WAIT_n(1'b1), .INT_n(irq_n), .NMI_n(1'b1), .BUSRQ_n(1'b1), .DI(idt),
+	.WAIT_n(~pause), .INT_n(irq_n), .NMI_n(1'b1), .BUSRQ_n(1'b1), .DI(idt),
 	.M1_n(m1), .MREQ_n(me), .IORQ_n(ie), .RD_n(rd), .WR_n(wr), .RFSH_n(rf), .HALT_n(), .BUSAK_n(),
 	.A(ad),
 	.DO(odt)
@@ -138,7 +146,13 @@ NRX_VIDEO video(
 	.CPUDI(odt),   .CPUDO(viddata),
 	.CPUME(mx),    .CPUWE(mw), .CPUDT(vid_Rce),
 
-	.ROMCL(ROMCL),.ROMAD(ROMAD),.ROMDT(ROMDT),.ROMEN(ROMEN)
+	.ROMCL(ROMCL),.ROMAD(ROMAD),.ROMDT(ROMDT),.ROMEN(ROMEN),
+
+	.hs_address(hs_address),
+	.hs_data_in(hs_data_in),
+	.hs_data_out(hs_data_out),
+	.hs_write(hs_write),
+	.hs_access(hs_access)
 );
 
 //--------------------------------------------------

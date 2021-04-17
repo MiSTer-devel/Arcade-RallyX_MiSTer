@@ -1044,4 +1044,11 @@ a5acb1b1aba19a938c878788857f7670
 		<part crc="834d4fda" name="rx1-7.8p"/>
 		<part crc="c7865434" name="rx1-1.11n"/>
 	</rom>
+	<rom index="3" md5="none">
+		<part>
+		12 98 BE 00 00 FF 00 08 00 08 00 01 00 FF 0F 00
+		00 00 80 60 00 08 00 01
+		</part>
+	</rom>	
+	<nvram index="4" size="8"/>
 </misterromdescription>
