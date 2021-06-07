@@ -93,7 +93,7 @@ localparam CONF_STR = {
 	"R0,Reset;",
 	"J1,Smoke,Start 1P,Start 2P,Coin;",
 	"jn,A,Start,Select,R;",
-	"jp,B,Start,,Select;",
+	"jp,B,Start,Select,R;",
 	"V,v",`BUILD_DATE
 };
 
@@ -208,8 +208,8 @@ wire m_left2   = btn_left_2  | joystk2[1];
 wire m_right2  = btn_right_2 | joystk2[0];
 wire m_trig2   = btn_fire_2  | joystk2[4];
 
-wire m_start1  = btn_one_player  | joystk1[5] | joystk2[5] | btn_start_1;
-wire m_start2  = btn_two_players | joystk1[6] | joystk2[6] | btn_start_2;
+wire m_start1  = btn_one_player  | joystk1[5] | btn_start_1;
+wire m_start2  = btn_two_players | joystk1[6] | joystk2[5] | btn_start_2;
 
 wire m_up1     = btn_up      | joystk1[3] | (bCabinet ? 1'b0 : m_up2);
 wire m_down1   = btn_down    | joystk1[2] | (bCabinet ? 1'b0 : m_down2);
