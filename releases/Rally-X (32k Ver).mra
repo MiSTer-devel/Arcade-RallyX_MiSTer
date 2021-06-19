@@ -25,7 +25,7 @@
 	<joystick>4-way</joystick>
 	<special_controls></special_controls>
 	<num_buttons>1</num_buttons>
-	<button_names></button_names>
+	<buttons names="Smoke,Start 1P,Start 2P,Coin,Pause" default="A,Start,Select,R,L"/>
 
 	<switches></switches>
 
