@@ -27,7 +27,15 @@
 	<num_buttons>1</num_buttons>
 	<buttons names="Smoke,Start 1P,Start 2P,Coin,Pause" default="A,Start,Select,R,L"/>
 
-	<switches></switches>
+	<switches>
+		<dip bits="6,7" name="Coinage"	ids="1 Coin 1 Credit, 1 Coin 2 Credits, 2 Coins 1 Credit, Free Play" />
+		<!-- These are the settings according to MAME, but they don't seem to work
+		<dip bits="3,5"	name="Difficulty"	ids="4 Cars Easy, 3 Cars Hard, 3 Cars Medium, 3 Cars Easy, 2 Cars Hard, 2 Cars Medium, 1 Car Hard, 1 Car Medium" values="6,0,3,7,1,4,2,5" />
+		-->
+		<dip bits="3,5"	name="Difficulty"	ids="4 Cars Easy, 3 Cars Easy" values="6,7" />
+		<dip bits="1,2" name="Bonus Life"	ids="Hard, Medium, Easy, Never" />
+		<dip bits="0"	name="Service Mode"	ids="Off,On" />
+	</switches>
 
 	<rom index="1"></rom>
 	<rom index="0" md5="113b2afb644dd386dc7c3fc1ae685ff4" zip="nrallyx.zip">
