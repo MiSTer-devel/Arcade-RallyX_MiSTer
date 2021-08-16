@@ -185,10 +185,9 @@ localparam CONF_STR = {
 
 	"H0OGH,Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
 	"-;",
-	//"OE,Cabinet,Upright,Cocktail;",
-	"O8A,Difficulty,M1,M2,M3,M4,M5,M6,M7,M8;",
-	"OBC,Bonus Life,M1,M2,M3,Nothing;",
-	"OF,Service Mode,Off,On;",
+	//"OE,Cabinet,Upright,Cocktail;"
+	//"-;",
+	"DIP;",
 	"-;",
 	"P1,Pause options;",
 	"P1OP,Pause when OSD is open,On,Off;",
@@ -199,6 +198,11 @@ localparam CONF_STR = {
 	"V,v",`BUILD_DATE
 };
 
+
+reg [7:0] dips;
+always @(posedge clk_sys)
+	if (ioctl_wr && (ioctl_index==254) && (ioctl_addr==0))
+		dips <= ioctl_dout;
 
 ////////////////////   CLOCKS   ///////////////////
 
@@ -339,7 +343,9 @@ assign AUDIO_S = 0; // unsigned PCM
 wire			rom_download = ioctl_download & !ioctl_index;
 wire			iRST  = RESET | status[0] | buttons[1] | rom_download;
 
-wire  [7:0] iDSW  = ~{ 2'b00, status[10:8], status[12:11], status[15] };
+// Note that bit 0 on controller 1 in the real hardware is the service indicator,
+// which is mapped into the dip register bit 0. Dip 0 freezes the game, which is
+// implemented in hardware and not mapped into the dip register.
 wire  [7:0] iCTR1 = ~{ m_coin1, m_start1, m_up1, m_down1, m_right1, m_left1, m_trig1, 1'b0 };
 wire  [7:0] iCTR2 = ~{ m_coin2, m_start2, m_up2, m_down2, m_right2, m_left2, m_trig2, bCabinet };
 
@@ -350,7 +356,7 @@ fpga_NRX GameCore (
 	.RESET(iRST),.CLK24M(clk_24M),
 	.HP(HPOS),.VP(VPOS),.PCLK(PCLK),
 	.POUT(oPIX),.SND(oSND),
-	.DSW(iDSW),.CTR1(iCTR1),.CTR2(iCTR2),
+	.DSW(~dips),.CTR1(iCTR1),.CTR2(iCTR2),
 	
 	.ROMCL(clk_sys),.ROMAD(ioctl_addr),.ROMDT(ioctl_dout),.ROMEN(ioctl_wr & rom_download),
 
