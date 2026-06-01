@@ -8,6 +8,7 @@ set_global_assignment -name VHDL_FILE rtl/cpu/T80.vhd
 set_global_assignment -name VERILOG_FILE rtl/rams.v
 set_global_assignment -name VERILOG_FILE rtl/nrx_video.v
 set_global_assignment -name VERILOG_FILE rtl/nrx_sprite.v
+set_global_assignment -name VERILOG_FILE rtl/nrx_bang.v
 set_global_assignment -name VERILOG_FILE rtl/nrx_sound.v
 set_global_assignment -name VERILOG_FILE rtl/fpga_nrx.v
 set_global_assignment -name VHDL_FILE rtl/dpram.vhd

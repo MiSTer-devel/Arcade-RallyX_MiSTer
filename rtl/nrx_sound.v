@@ -67,6 +67,7 @@ module NRX_SOUND
 (
 	input					CLK24M,
 	input					CCLK,
+	input					RESET,
 	output reg [7:0]	SND,
 
 	input	 [4:0]	AD,
@@ -84,7 +85,6 @@ module NRX_SOUND
 reg [11:0] ccnt;
 always @( posedge CLK24M ) ccnt <= ccnt+1;
 
-wire	CLK6K   = ccnt[11];
 wire  SCLKx8  = ccnt[4];
 wire	SCLK    = ccnt[7];
 
@@ -92,25 +92,16 @@ wire  [7:0]		wa0, wa1, wa2;
 wire  [3:0]		wd0, wd1, wd2;
 NPSG_WAV waverom(
 	SCLKx8, wa0, wa1, wa2, wd0, wd1, wd2,
-	ROMCL,ROMAD[7:0],ROMDT[3:0],ROMEN & (ROMAD[15:8]==8'h91)
+	ROMCL,ROMAD[7:0],ROMDT[3:0],ROMEN & (ROMAD[15:8]==8'h51)
 );
 
-reg		  		bWavPlay = 1'b0;
-reg  [13:0] 	wap = 14'h0000;
-wire  [7:0] 	wdp;
-wire  [7:0]		wo = bWavPlay ? wdp : 8'h80;
-DLROM #(14,8) bangpcm(CLK6K,wap,wdp, ROMCL,ROMAD[13:0],ROMDT,ROMEN & (ROMAD[15:14]==2'b01));
-
-always @( posedge CLK6K ) begin
-	if ( BANG && (~bWavPlay) ) bWavPlay <= 1'b1;
-	if ( bWavPlay ) begin
-		wap <= wap+1;
-		if ( wap == 14'h29FF ) begin
-			wap <= 14'h0000;
-			bWavPlay <= 1'b0;
-		end
-	end
-end
+wire [5:0] bang_out;
+NRX_BANG bang_sound(
+	.CLK24M(CLK24M),
+	.RESET(RESET),
+	.BANG(BANG),
+	.OUT(bang_out)
+);
 
 reg	[19:0]	f0;
 reg	[15:0]	fq1, fq2;
@@ -126,8 +117,7 @@ NPSG_VOICE voice0( SCLK, o0, f0, v0, n0, wa0, wd0 );
 NPSG_VOICE voice1( SCLK, o1, f1, v1, n1, wa1, wd1 );
 NPSG_VOICE voice2( SCLK, o2, f2, v2, n2, wa2, wd2 );
 
-reg [7:0] wout;
-always @( posedge SCLK ) SND <= ( { 2'b0, wo[7:2] } ) + ( o0 + o1 + o2 );
+always @( posedge SCLK ) SND <= { 2'b0, bang_out } + { 4'b0000, o0 } + { 4'b0000, o1 } + { 4'b0000, o2 };
 
 always @( posedge CCLK ) begin
 	if ( WR ) case ( AD )

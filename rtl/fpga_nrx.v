@@ -159,7 +159,7 @@ NRX_VIDEO video(
 //  SOUND
 //--------------------------------------------------
 NRX_SOUND	sound(
-	.CLK24M(CLK), .CCLK(CCLK), .SND(SND),
+	.CLK24M(CLK), .CCLK(CCLK), .RESET(RESET), .SND(SND),
 	.AD(ad[4:0]), .DI(odt[3:0]),.WR(snd_Wce),
 	.BANG(bang),
 

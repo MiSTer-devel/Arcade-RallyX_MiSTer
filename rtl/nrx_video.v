@@ -132,7 +132,7 @@ wire	[11:0]	SPCHRADR;
 wire	[11:0]	CHRA = oHB ? SPCHRADR : { CHRC, ( HP[2] ^ BGFX ), ( VP[2:0] ^ BGFY ) };
 
 wire	[7:0]		CHRO;
-DLROM #(12,8)  chrrom(VCLKx4,CHRA,CHRO, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:12]==4'h8));
+DLROM #(12,8)  chrrom(VCLKx4,CHRA,CHRO, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:12]==4'h4));
 
 
 //----------------------------------------
@@ -140,7 +140,7 @@ DLROM #(12,8)  chrrom(VCLKx4,CHRA,CHRO, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:12]=
 //----------------------------------------
 wire  [7:0] 	DROMAD;
 wire  [7:0] 	DROMDT;
-DLROM #(8,8)	dotrom(VCLKx4,DROMAD,DROMDT, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:8]==8'h90));
+DLROM #(8,8)	dotrom(VCLKx4,DROMAD,DROMDT, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:8]==8'h50));
 
 
 //----------------------------------------
@@ -174,11 +174,11 @@ wire bSPTRANSP = ( SPCOL[1:0] == 2'b00 );
 
 wire	[7:0]		OUTCOL = ( bBGOPAQUE | bSPTRANSP ) ? BGCOL : SPCOL[7:0];
 wire	[3:0]		CLUT;
-DLROM #(8,4)	colorlt(~VCLKx4,OUTCOL,CLUT, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:8]==8'h92));
+DLROM #(8,4)	colorlt(~VCLKx4,OUTCOL,CLUT, ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:8]==8'h52));
 
 wire	[4:0]		PALA = SPCOL[8] ? SPCOL[4:0] : { 1'b0, CLUT };
 wire	[7:0]		PALO;
-DLROM #(5,8)	palette(VCLKx4,PALA,PALO,  ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:5]=={8'h93,3'b000}));
+DLROM #(5,8)	palette(VCLKx4,PALA,PALO,  ROMCL,ROMAD,ROMDT,ROMEN & (ROMAD[15:5]=={8'h53,3'b000}));
 
 
 //----------------------------------------
